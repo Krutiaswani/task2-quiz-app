@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+
+<div class="bg-white p-8 rounded shadow w-full max-w-md text-center">
+  
+  <h1 class="text-2xl font-bold mb-4">Quiz App</h1>
+  
+  <p id="question" class="mb-4">Question will appear here</p>
+
+  <div id="options" class="flex flex-col gap-2">
+    <!-- options will come here -->
+  </div>
+
+  <button id="nextBtn" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
+    Next
+  </button>
+
+</div>
+
+<script>
+
+const quizData = [
+  {
+    question: "What is the capital of India?",
+    options: ["Mumbai", "Delhi", "Chennai", "Kolkata"],
+    correct: "Delhi"
+  },
+  {
+    question: "Which language is used for web development?",
+    options: ["Python", "C++", "JavaScript", "Java"],
+    correct: "JavaScript"
+  },
+  {
+    question: "Who is known as father of computer?",
+    options: ["Newton", "Einstein", "Charles Babbage", "Tesla"],
+    correct: "Charles Babbage"
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const nextBtn = document.getElementById("nextBtn");
+
+function loadQuestion() {
+  const current = quizData[currentQuestion];
+  questionEl.innerText = current.question;
+  optionsEl.innerHTML = "";
+
+  current.options.forEach(option => {
+    const btn = document.createElement("button");
+    btn.innerText = option;
+    btn.classList = "bg-gray-200 p-2 rounded hover:bg-gray-300";
+    
+    btn.onclick = () => selectAnswer(option);
+    
+    optionsEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(selected) {
+  const correct = quizData[currentQuestion].correct;
+
+  const buttons = optionsEl.querySelectorAll("button");
+
+  buttons.forEach(button => {
+    // remove hover effect
+    button.classList.remove("hover:bg-gray-300");
+
+    if (button.innerText === correct) {
+      button.classList.add("bg-green-400");
+    } else {
+      button.classList.add("bg-red-400");
+    }
+
+    button.disabled = true;
+  });
+
+  if (selected === correct) {
+    score++;
+  }
+}
+
+function loadNext() {
+  if (currentQuestion < quizData.length) {
+    loadQuestion();
+  } else {
+    showScore();
+  }
+}
+
+function showScore() {
+  questionEl.innerText = `Your Score: ${score}/${quizData.length}`;
+  optionsEl.innerHTML = "";
+  nextBtn.style.display = "none";
+}
+
+nextBtn.addEventListener("click", () => {
+  currentQuestion++;
+  loadNext();
+});
+
+// start quiz
+loadQuestion();
+
+</script>
+
+</body>
+</html>
